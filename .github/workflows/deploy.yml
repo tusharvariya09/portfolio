@@ -3,66 +3,46 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main        # Runs automatically on every push to main
-  workflow_dispatch: # Also allows manual trigger from GitHub UI
-
-permissions:
-  contents: write   # Needed to push to gh-pages branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # ── Step 1: Checkout your code ──
-      - name: Checkout Repository
+      # 1 — Checkout your code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # ── Step 2: Install .NET 8 SDK ──
-      - name: Setup .NET 8
+      # 2 — Install .NET 8
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # ── Step 3: Restore NuGet packages ──
-      - name: Restore Dependencies
-        run: dotnet restore TusharPortfolio/TusharPortfolio.csproj
-
-      # ── Step 4: Publish in Release mode ──
-      # GHPages repo name = "portfolio" → base href = /portfolio/
-      # ⚠️  IMPORTANT: Change "portfolio" below to match your GitHub repo name exactly
+      # 3 — Publish the Blazor WASM app
       - name: Publish Blazor App
-        run: |
-          dotnet publish TusharPortfolio/TusharPortfolio.csproj \
-            -c Release \
-            -o publish \
-            /p:GHPages=true
+        run: dotnet publish -c Release -o release
 
-      # ── Step 5: Fix base href for GitHub Pages ──
-      # Replaces <base href="/" /> with <base href="/portfolio/" />
-      # ⚠️  Change "portfolio" to your actual repo name
-      - name: Fix base href in index.html
+      # 4 — Fix base href so assets load correctly on GitHub Pages
+      #     Change "portfolio" to your exact GitHub repo name
+      - name: Fix base href
         run: |
           REPO_NAME="portfolio"
-          sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" \
-            publish/wwwroot/index.html
+          sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" release/wwwroot/index.html
 
-      # ── Step 6: Copy index.html → 404.html ──
-      # GitHub Pages serves 404.html on direct URL / refresh — this makes Blazor routing work
-      - name: Create 404.html for SPA routing
-        run: cp publish/wwwroot/index.html publish/wwwroot/404.html
+      # 5 — Copy index.html → 404.html (fixes page-refresh blank screen)
+      - name: Add 404.html
+        run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-      # ── Step 7: Add .nojekyll ──
-      # Tells GitHub Pages NOT to process files with Jekyll
-      # Without this, folders starting with _ (like _framework) get ignored!
-      - name: Add .nojekyll file
-        run: touch publish/wwwroot/.nojekyll
+      # 6 — Add .nojekyll so GitHub doesn't ignore _framework folder
+      - name: Add .nojekyll
+        run: touch release/wwwroot/.nojekyll
 
-      # ── Step 8: Deploy to gh-pages branch ──
+      # 7 — Deploy only the wwwroot folder to gh-pages branch
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: publish/wwwroot
-          publish_branch: gh-pages
-          commit_message: "Deploy: ${{ github.sha }}"
+          publish_dir: release/wwwroot
+          force_orphan: true
