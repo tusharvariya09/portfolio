@@ -1,0 +1,83 @@
+@page "/skills"
+<PageTitle>Skills — Tushar Variya</PageTitle>
+
+<div class="page-section">
+    <div class="section-header anim">
+        <div class="section-tag">What I Know</div>
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="section-line"></div>
+    </div>
+
+    <div class="skills-cards anim-d1">
+        @foreach (var cat in _categories)
+        {
+            <div class="skill-card">
+                <div class="skill-card-hd">
+                    <div class="skill-card-ico"><i class="fas @cat.Icon"></i></div>
+                    <div class="skill-card-title">@cat.Title</div>
+                </div>
+                <div class="tag-row">
+                    @foreach (var s in cat.Skills)
+                    {
+                        <span class="tag">@s</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="proficiency anim-d2">
+        <h3>Proficiency Levels</h3>
+        @foreach (var b in _bars)
+        {
+            <div class="bar-item">
+                <div class="bar-hd">
+                    <span class="bar-name">@b.Name</span>
+                    <span class="bar-pct">@b.Pct%</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width:@(_animated ? b.Pct+"%" : "0%")"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private bool _animated;
+
+    record SkillCat(string Icon, string Title, string[] Skills);
+    record SkillBar(string Name, int Pct);
+
+    private List<SkillCat> _categories = new()
+    {
+        new("fa-code",       "Languages",          new[]{"C#","SQL","HTML","CSS","JavaScript"}),
+        new("fa-layer-group","Frameworks",          new[]{"ASP.NET Core","ASP.NET MVC","Web API","Entity Framework Core","Blazor"}),
+        new("fa-database",   "Databases",           new[]{"Oracle PL/SQL","SQL Server","LINQ","Stored Procedures","Migrations"}),
+        new("fa-tools",      "Tools & DevOps",      new[]{"Visual Studio","GitLab","Postman","Swagger","CI/CD Pipelines"}),
+        new("fa-lightbulb",  "Concepts",            new[]{"REST APIs","Dependency Injection","SOLID Principles","Clean Architecture","Agile Scrum"}),
+        new("fa-shield-alt", "Architecture",        new[]{"Layered Architecture","Repository Pattern","Service Layer","Middleware","JWT Auth"}),
+    };
+
+    private List<SkillBar> _bars = new()
+    {
+        new("C# / .NET",            90),
+        new("ASP.NET Core Web API", 88),
+        new("ASP.NET MVC",          85),
+        new("Entity Framework Core",82),
+        new("SQL Server",           80),
+        new("Oracle PL/SQL",        78),
+        new("GitLab CI/CD",         70),
+        new("Blazor",               65),
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(250);
+            _animated = true;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tushar Variya | .NET Developer</title>
+
+  <!--
+    GitHub Pages SPA Fix
+    =====================
+    When a user visits a deep link like /projects or hits refresh,
+    GitHub Pages looks for that file — it doesn't exist — so it shows
+    this 404.html instead.
+
+    This script grabs the URL path, stores it in sessionStorage,
+    then redirects to index.html. Once index.html (Blazor) loads,
+    the redirect script below picks up the stored path and navigates to it.
+
+    Credit: https://github.com/rafgraph/spa-github-pages
+  -->
+
+  <script>
+    // ⚠️ Set pathSegmentsToKeep to 1 for GitHub Pages project sites (e.g. /portfolio/)
+    // Set to 0 for user/org sites (e.g. tusharvariya.github.io)
+    var pathSegmentsToKeep = 1;
+
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body>Redirecting...</body>
+</html>

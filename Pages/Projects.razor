@@ -1,0 +1,80 @@
+@page "/projects"
+<PageTitle>Projects — Tushar Variya</PageTitle>
+
+<div class="page-section">
+    <div class="section-header anim">
+        <div class="section-tag">What I've Built</div>
+        <h2 class="section-title">Projects</h2>
+        <div class="section-line"></div>
+    </div>
+
+    <div class="filter-bar anim-d1">
+        @foreach (var f in _filters)
+        {
+            <button class="filter-btn @(_active == f ? "active" : "")" @onclick="() => _active = f">@f</button>
+        }
+    </div>
+
+    <div class="projects-grid anim-d2">
+        @foreach (var p in Filtered)
+        {
+            <div class="proj-card">
+                <div class="proj-hd">
+                    <div class="proj-ico">@p.Icon</div>
+                    <div class="proj-links">
+                        <a href="@p.Repo" target="_blank" class="proj-link" title="GitHub"><i class="fab fa-github"></i></a>
+                        @if (!string.IsNullOrEmpty(p.Live))
+                        {
+                            <a href="@p.Live" target="_blank" class="proj-link" title="Demo"><i class="fas fa-external-link-alt"></i></a>
+                        }
+                    </div>
+                </div>
+                <div class="proj-title">@p.Title</div>
+                <div class="proj-desc">@p.Desc</div>
+                <div class="proj-tags">
+                    @foreach (var t in p.Tags)
+                    {
+                        <span class="proj-tag">@t</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string _active = "All";
+    private string[] _filters = { "All", "API", "MVC", "Full Stack", "Database" };
+
+    private IEnumerable<Proj> Filtered => _active == "All" ? _projects : _projects.Where(p => p.Cat == _active);
+
+    record Proj(string Icon, string Title, string Desc, string Cat, string Repo, string Live, string[] Tags);
+
+    private readonly List<Proj> _projects = new()
+    {
+        new("🛒","E-Commerce Web API",
+            "Full-featured REST API for e-commerce with product catalog, cart, JWT auth, and order processing.",
+            "API","#","",new[]{"ASP.NET Core","SQL Server","JWT","Swagger"}),
+        new("📦","Product Management API",
+            "CRUD REST API with filtering, pagination, category management, and role-based access control.",
+            "API","#","",new[]{"Web API","Entity Framework","LINQ","SQL Server"}),
+        new("📊","Admin Dashboard MVC",
+            "Feature-rich admin panel with user management, analytics, report generation, and RBAC.",
+            "MVC","#","",new[]{"ASP.NET MVC","C#","Bootstrap","SQL Server"}),
+        new("🔄","CRUD API with EF Core",
+            "Clean architecture CRUD API: repository pattern, service layer, unit of work, and migrations.",
+            "API","#","",new[]{"EF Core","C#","LINQ","SQL Server"}),
+        new("🏪","Inventory Management System",
+            "Full-stack inventory with real-time stock, purchase orders, supplier management, and reporting.",
+            "Full Stack","#","",new[]{"ASP.NET Core MVC","Oracle PL/SQL","Bootstrap"}),
+        new("🔐","Identity & Auth Service",
+            "Secure auth service with JWT tokens, refresh tokens, role management, and ASP.NET Core Identity.",
+            "API","#","",new[]{"ASP.NET Core","JWT","Identity","SQL Server"}),
+        new("📋","Employee Management API",
+            "RESTful HR API with employee CRUD, departments, attendance, and Oracle stored procedures.",
+            "Database","#","",new[]{"Web API","Oracle PL/SQL","Stored Procs","C#"}),
+        new("🌐","Blog Platform MVC",
+            "CMS with article publishing, comment system, tag filtering, admin panel, and SEO routing.",
+            "MVC","#","",new[]{"ASP.NET MVC","EF Core","Bootstrap","SQL Server"}),
+    };
+}

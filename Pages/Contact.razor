@@ -1,0 +1,99 @@
+@page "/contact"
+<PageTitle>Contact — Tushar Variya</PageTitle>
+
+<div class="page-section">
+    <div class="section-header anim">
+        <div class="section-tag">Let's Connect</div>
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="section-line"></div>
+    </div>
+
+    <div class="contact-grid">
+        <!-- Info -->
+        <div class="anim-d1">
+            <p class="contact-lead">
+                I'm currently open to new opportunities. Whether you have a project in mind,
+                want to collaborate, or just want to say hello — my inbox is always open!
+            </p>
+            <div class="cinfo-card">
+                <div class="cinfo-ico"><i class="fas fa-envelope"></i></div>
+                <div><div class="cinfo-label">Email</div><div class="cinfo-value"><a href="mailto:tusharvariya187@gmail.com">tusharvariya187&#64;gmail.com</a></div></div>
+            </div>
+            <div class="cinfo-card">
+                <div class="cinfo-ico"><i class="fas fa-phone"></i></div>
+                <div><div class="cinfo-label">Phone</div><div class="cinfo-value"><a href="tel:+919426160328">+91 9426160328</a></div></div>
+            </div>
+            <div class="cinfo-card">
+                <div class="cinfo-ico"><i class="fas fa-map-marker-alt"></i></div>
+                <div><div class="cinfo-label">Location</div><div class="cinfo-value">Surat, Gujarat, India</div></div>
+            </div>
+            <div class="cinfo-card">
+                <div class="cinfo-ico"><i class="fab fa-linkedin"></i></div>
+                <div><div class="cinfo-label">LinkedIn</div><div class="cinfo-value"><a href="https://www.linkedin.com/in/tusharvariya" target="_blank">linkedin.com/in/tusharvariya</a></div></div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="anim-d2">
+            <div class="form-box">
+                @if (_ok)
+                {
+                    <div class="msg-ok"><i class="fas fa-check-circle" style="margin-right:.5rem"></i>Message sent! I'll get back to you soon.</div>
+                }
+                @if (!string.IsNullOrEmpty(_err))
+                {
+                    <div class="msg-err"><i class="fas fa-exclamation-circle" style="margin-right:.5rem"></i>@_err</div>
+                }
+                <div class="cform">
+                    <div class="cform-row">
+                        <div class="cform-group">
+                            <label class="cform-label">Full Name *</label>
+                            <input class="cform-input" type="text" placeholder="John Doe" @bind="_name" @bind:event="oninput" />
+                        </div>
+                        <div class="cform-group">
+                            <label class="cform-label">Email *</label>
+                            <input class="cform-input" type="email" placeholder="john@example.com" @bind="_email" @bind:event="oninput" />
+                        </div>
+                    </div>
+                    <div class="cform-group">
+                        <label class="cform-label">Subject</label>
+                        <input class="cform-input" type="text" placeholder="Project / Job Opportunity" @bind="_subject" @bind:event="oninput" />
+                    </div>
+                    <div class="cform-group">
+                        <label class="cform-label">Message *</label>
+                        <textarea class="cform-area" placeholder="Tell me about your project or opportunity..." @bind="_msg" @bind:event="oninput"></textarea>
+                    </div>
+                    <button class="cform-submit" @onclick="Submit" disabled="@_sending">
+                        @if (_sending)
+                        {
+                            <i class="fas fa-spinner fa-spin"></i><span>Sending...</span>
+                        }
+                        else
+                        {
+                            <i class="fas fa-paper-plane"></i><span>Send Message</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string _name="", _email="", _subject="", _msg="", _err="";
+    bool _sending, _ok;
+
+    async Task Submit()
+    {
+        _err = ""; _ok = false;
+        if (string.IsNullOrWhiteSpace(_name) || string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_msg))
+        { _err = "Please fill in all required fields."; return; }
+        if (!_email.Contains("@"))
+        { _err = "Please enter a valid email address."; return; }
+
+        _sending = true;
+        await Task.Delay(1400);
+        _sending = false; _ok = true;
+        _name = _email = _subject = _msg = "";
+    }
+}

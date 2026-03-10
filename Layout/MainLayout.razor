@@ -1,0 +1,103 @@
+@inherits LayoutComponentBase
+@inject ThemeService ThemeService
+@inject NavigationManager Nav
+
+@implements IDisposable
+
+<div id="portfolio-root" data-theme="@ThemeService.ThemeAttribute" class="portfolio-root">
+
+    <!-- ===== TOP NAVBAR ===== -->
+    <header class="navbar scrolled">
+        <div class="nav-container">
+
+            <button class="nav-brand" @onclick='() => { Nav.NavigateTo("/"); CloseMenu(); }'>
+                <span class="brand-bracket">&lt;</span>TV<span class="brand-bracket">/&gt;</span>
+            </button>
+
+            <nav class="nav-links-desktop">
+                <NavItem Href="/" Label="Home" OnClick="CloseMenu" />
+                <NavItem Href="/about" Label="About" OnClick="CloseMenu" />
+                <NavItem Href="/skills" Label="Skills" OnClick="CloseMenu" />
+                <NavItem Href="/experience" Label="Experience" OnClick="CloseMenu" />
+                <NavItem Href="/projects" Label="Projects" OnClick="CloseMenu" />
+                <NavItem Href="/contact" Label="Contact" OnClick="CloseMenu" />
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" @onclick="ToggleTheme">
+                    @if (ThemeService.IsDark)
+                    {
+                        <i class="fas fa-sun"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-moon"></i>
+                    }
+                </button>
+                <a href="mailto:tusharvariya187@gmail.com" class="nav-hire-btn">Hire Me</a>
+                <button class="hamburger @(_mobileOpen ? "is-open" : "")" @onclick="ToggleMenu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MOBILE MENU ===== -->
+    @if (_mobileOpen)
+    {
+        <div class="mobile-menu-overlay" @onclick="CloseMenu"></div>
+        <div class="mobile-menu">
+            <NavItem Href="/" Label="Home" OnClick="CloseMenu" IsMobile="true" />
+            <NavItem Href="/about" Label="About" OnClick="CloseMenu" IsMobile="true" />
+            <NavItem Href="/skills" Label="Skills" OnClick="CloseMenu" IsMobile="true" />
+            <NavItem Href="/experience" Label="Experience" OnClick="CloseMenu" IsMobile="true" />
+            <NavItem Href="/projects" Label="Projects" OnClick="CloseMenu" IsMobile="true" />
+            <NavItem Href="/contact" Label="Contact" OnClick="CloseMenu" IsMobile="true" />
+            <div class="mobile-menu-social">
+                <a href="https://www.linkedin.com/in/tusharvariya" target="_blank" class="social-icon-btn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/tusharvariya" target="_blank" class="social-icon-btn"><i class="fab fa-github"></i></a>
+                <a href="mailto:tusharvariya187@gmail.com" class="social-icon-btn"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    }
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <main class="page-body">
+        @Body
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="brand-bracket">&lt;</span>TV<span class="brand-bracket">/&gt;</span>
+            </div>
+            <p class="footer-copy">Built by <span class="footer-accent">Tushar Variya</span> &bull; &copy; @DateTime.Now.Year</p>
+            <div class="footer-social">
+                <a href="https://www.linkedin.com/in/tusharvariya" target="_blank" class="social-icon-btn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/tusharvariya" target="_blank" class="social-icon-btn"><i class="fab fa-github"></i></a>
+                <a href="mailto:tusharvariya187@gmail.com" class="social-icon-btn"><i class="fas fa-envelope"></i></a>
+                <a href="tel:+919426160328" class="social-icon-btn"><i class="fas fa-phone"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+@code {
+    private bool _mobileOpen = false;
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += StateHasChanged;
+    }
+
+    private void ToggleTheme() => ThemeService.Toggle();
+    private void ToggleMenu() => _mobileOpen = !_mobileOpen;
+    private void CloseMenu() => _mobileOpen = false;
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= StateHasChanged;
+    }
+}

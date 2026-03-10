@@ -1,0 +1,32 @@
+@inject NavigationManager Nav
+
+<button class="@CssClass" @onclick="Navigate">
+    @Label
+</button>
+
+@code {
+    [Parameter] public string Href { get; set; } = "/";
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public Action? OnClick { get; set; }
+    [Parameter] public bool IsMobile { get; set; } = false;
+
+    private bool IsActive
+    {
+        get
+        {
+            var current = Nav.Uri.Replace(Nav.BaseUri.TrimEnd('/'), "").TrimEnd('/');
+            var target = Href == "/" ? "" : Href.TrimEnd('/');
+            return current == target;
+        }
+    }
+
+    private string CssClass => IsMobile
+        ? $"mobile-nav-link {(IsActive ? "active" : "")}"
+        : $"nav-link {(IsActive ? "active" : "")}";
+
+    private void Navigate()
+    {
+        Nav.NavigateTo(Href);
+        OnClick?.Invoke();
+    }
+}
