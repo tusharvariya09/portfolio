@@ -28,7 +28,7 @@ jobs:
       #     Change "portfolio" to your exact GitHub repo name
       - name: Fix base href
         run: |
-          REPO_NAME="portfolio"
+          REPO_NAME="TusharPortfolio"
           sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" release/wwwroot/index.html
 
       # 5 — Copy index.html → 404.html (fixes page-refresh blank screen)
