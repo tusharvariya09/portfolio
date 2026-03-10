@@ -22,13 +22,13 @@ jobs:
 
       # 3 — Publish the Blazor WASM app
       - name: Publish Blazor App
-        run: dotnet publish -c Release -o release
+        run: dotnet publish TusharPortfolio.csproj -c Release -o release
 
       # 4 — Fix base href so assets load correctly on GitHub Pages
       #     Change "portfolio" to your exact GitHub repo name
       - name: Fix base href
         run: |
-          REPO_NAME="TusharPortfolio"
+          REPO_NAME="portfolio"
           sed -i "s|<base href=\"/\" />|<base href=\"/${REPO_NAME}/\" />|g" release/wwwroot/index.html
 
       # 5 — Copy index.html → 404.html (fixes page-refresh blank screen)
